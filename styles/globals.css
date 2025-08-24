@@ -109,6 +109,7 @@ body {
 }
 
 .border-frame-content {
+  user-select: none;
   position: relative;
   z-index: 2;
   padding: 5rem 3rem;
