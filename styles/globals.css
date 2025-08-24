@@ -1,0 +1,190 @@
+/* ABOUTME: Global styles for the wedding website */
+/* ABOUTME: Typography system with Google Fonts and responsive design */
+
+:root {
+  --font-script: 'Dancing Script', cursive, serif;
+  --font-serif: 'Playfair Display', serif, Georgia, 'Times New Roman', Times, serif;
+  --font-fallback: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  
+  /* Color system */
+  --color-peach-light: #ffeaa7;
+  --color-peach: #fdcb6e;
+  --color-peach-dark: #e17055;
+  --color-pink-light: #fd79a8;
+  --color-pink: #e84393;
+  --color-pink-dark: #a29bfe;
+  --color-purple: #6c5ce7;
+  --color-purple-dark: #5a4fcf;
+  
+  /* Text colors with high contrast */
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --text-accent: #2d3436;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: var(--font-fallback);
+  height: 100%;
+  overflow-x: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--color-peach-light) 0%,
+    var(--color-peach) 25%,
+    var(--color-pink-light) 50%,
+    var(--color-pink) 75%,
+    var(--color-purple) 100%
+  );
+  background-attachment: fixed;
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.content {
+  text-align: center;
+  max-width: 600px;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.content:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.names {
+  font-family: var(--font-script);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.date {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.message {
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    animation: none;
+    background: linear-gradient(
+      135deg,
+      var(--color-peach) 0%,
+      var(--color-pink-light) 50%,
+      var(--color-purple) 100%
+    );
+  }
+}
+
+/* Tablet optimizations */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .content {
+    max-width: 500px;
+    padding: 2.5rem 2rem;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .content {
+    max-width: 100%;
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+  
+  .content:hover {
+    transform: translateY(-1px);
+  }
+  
+  .names {
+    margin-bottom: 0.75rem;
+  }
+  
+  .date {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Large desktop optimizations */
+@media (min-width: 1200px) {
+  .content {
+    max-width: 700px;
+    padding: 4rem 3rem;
+  }
+}
+
+/* Ultra-wide screen optimizations */
+@media (min-width: 1600px) {
+  .container {
+    padding: 3rem;
+  }
+  
+  .content {
+    max-width: 800px;
+    padding: 5rem 4rem;
+  }
+}

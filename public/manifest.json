@@ -1,0 +1,10 @@
+{
+  "name": "Christina & Peter Wedding",
+  "short_name": "C&P Wedding",
+  "description": "Wedding website for Christina & Peter - Fall 2026",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdcb6e",
+  "theme_color": "#fdcb6e",
+  "orientation": "portrait-primary"
+}
