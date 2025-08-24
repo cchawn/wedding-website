@@ -60,10 +60,34 @@ The static site will be generated in the `out/` directory, ready for deployment 
 
 This is a static Next.js site that can be deployed to any static hosting service:
 
-- **Vercel**: `vercel --prod`
-- **Netlify**: Upload the `out/` directory
-- **GitHub Pages**: Deploy the `out/` directory
-- **Any CDN/Static Host**: Upload the `out/` directory
+### GitHub Pages
+
+#### Automatic Deployment (Recommended)
+The repository includes a GitHub Actions workflow (`.github/workflows/nextjs.yml`) that automatically:
+1. Builds the site using the custom domain configuration
+2. Deploys to GitHub Pages on every push to `main` branch
+3. Supports manual deployment via GitHub Actions tab
+
+#### Manual Deployment
+For manual deployment, use the appropriate build command:
+
+```bash
+# For custom domain (like peterandchristina.wedding)
+npm run build:custom-domain
+
+# For GitHub Pages subdomain (username.github.io/repository-name)
+npm run build:github
+
+# Standard build (for other hosting services)
+npm run build
+```
+
+Then deploy the `out/` directory to your hosting service.
+
+### Other Hosting Services
+- **Vercel**: `vercel --prod` (automatic deployment)
+- **Netlify**: Upload the `out/` directory or connect via Git
+- **Any CDN/Static Host**: Upload the `out/` directory contents
 
 ## 📁 Project Structure
 

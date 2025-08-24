@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:github": "GITHUB_PAGES=true next build",
+    "build:custom-domain": "CUSTOM_DOMAIN=true next build",
     "start": "next start",
     "export": "next build",
     "serve": "http-server out -p 3001"
