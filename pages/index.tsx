@@ -4,12 +4,13 @@
 import React from 'react';
 import Head from 'next/head';
 import ConfettiCanvas from '../components/ConfettiCanvas';
+import ScallopFrame from '../components/ScallopFrame';
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>Christina & Peter - Coming Soon</title>
+        <title>Peter & Christina - Coming Soon</title>
         <meta name="description" content="Join us for our wedding celebration in Fall 2026! More details coming soon." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
@@ -33,15 +34,15 @@ export default function Home() {
         {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Alice&family=Sacramento&display=swap" rel="stylesheet" />
       </Head>
       <ConfettiCanvas />
       <main className="container">
-        <div className="content">
-          <h1 className="names">Christina & Peter</h1>
+        <ScallopFrame className="content">
+          <h1 className="names">Peter & Christina</h1>
           <h2 className="date">Fall 2026</h2>
           <p className="message">Coming Soon</p>
-        </div>
+        </ScallopFrame>
       </main>
     </>
   );

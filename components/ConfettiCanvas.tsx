@@ -26,8 +26,9 @@ const ConfettiCanvas: React.FC = () => {
   const prefersReducedMotion = useRef<boolean>(false);
 
   const colors = [
-    '#ffeaa7', '#fdcb6e', '#e17055', '#fd79a8', 
-    '#e84393', '#a29bfe', '#6c5ce7', '#5a4fcf'
+    '#1d2a62', '#87aece', '#f5f3d8', '#afd06e', 
+    '#437118', '#6ba3d0', '#b8e086', '#2d4a0f',
+    '#fd79a8', '#ffeaa7', '#ff7675'
   ];
 
   const createParticle = useCallback((x: number, y: number): Particle => {
