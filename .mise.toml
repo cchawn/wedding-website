@@ -1,0 +1,5 @@
+# ABOUTME: mise configuration for Christina & Peter's wedding website
+# ABOUTME: specifies Node.js version for consistent development environment
+
+[tools]
+node = "22"
