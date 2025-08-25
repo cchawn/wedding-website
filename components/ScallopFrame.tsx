@@ -14,7 +14,7 @@ const ScallopFrame: React.FC<ScallopFrameProps> = ({ children, className = '' })
       <div className="border-svg-wrapper">
         <svg 
           className="border-frame-svg" 
-          viewBox="0 0 300 315" 
+          viewBox="0 0 315 315" 
           preserveAspectRatio="none"
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"

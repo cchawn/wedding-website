@@ -34,13 +34,12 @@ export default function Home() {
         {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Alice&family=Sacramento&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Average+Sans&family=Goudy+Bookletter+1911&family=Homemade+Apple&display=swap" rel="stylesheet" />
       </Head>
       <ConfettiCanvas />
       <main className="container">
         <ScallopFrame className="content">
           <h1 className="names">Peter & Christina</h1>
-          <h2 className="date">Fall 2026</h2>
           <p className="message">Coming Soon</p>
         </ScallopFrame>
       </main>
