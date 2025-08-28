@@ -41,6 +41,7 @@ export default function Home() {
         <ScallopFrame className="content">
           <h1 className="names">Peter & Christina</h1>
           <p className="message">Coming Soon</p>
+          <p className="message date">Fall 2026</p>
         </ScallopFrame>
       </main>
     </>
