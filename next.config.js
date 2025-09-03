@@ -1,6 +1,3 @@
-// ABOUTME: Next.js configuration for static export of wedding website
-// ABOUTME: Handles GitHub Pages deployment with and without custom domains
-
 const isProd = process.env.NODE_ENV === 'production';
 const isGitHubPages = process.env.GITHUB_PAGES === 'true';
 const hasCustomDomain = process.env.CUSTOM_DOMAIN === 'true';
@@ -17,6 +14,13 @@ const nextConfig = {
     basePath: '/wedding-website',
     assetPrefix: '/wedding-website/',
   }),
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack']
+    });
+    return config;
+  },
 };
 
 module.exports = nextConfig;

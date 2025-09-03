@@ -1,238 +1,167 @@
-// ABOUTME: Canvas-based confetti animation component for wedding website
-// ABOUTME: Handles particle system with mouse-responsive confetti effects
+import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import confetti from 'canvas-confetti';
 
-import React, { useEffect, useRef, useCallback } from 'react';
-
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  rotation: number;
-  rotationSpeed: number;
-  color: string;
-  size: number;
-  opacity: number;
-  life: number;
-  maxLife: number;
-  shape: 'square' | 'circle' | 'triangle';
+export interface ConfettiCanvasRef {
+  fireConfetti: () => void;
 }
 
-const ConfettiCanvas: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
-  const animationIdRef = useRef<number | undefined>(undefined);
-  const mouseRef = useRef({ x: 0, y: 0 });
+const ConfettiCanvas = forwardRef<ConfettiCanvasRef>((_, ref) => {
   const prefersReducedMotion = useRef<boolean>(false);
+  const confettiInstance = useRef<confetti.CreateTypes | null>(null);
 
   const colors = [
-    '#1d2a62', '#87aece', '#f5f3d8', '#afd06e', 
-    '#437118', '#6ba3d0', '#b8e086', '#2d4a0f',
-    '#fd79a8', '#ffeaa7', '#ff7675'
+    '#2C3E35',
+    '#6B8CAE',
+    '#9CAF88',
+    '#B8860B',
+    '#E6B85C',
+    '#E8B4CB',
   ];
 
-  const createParticle = useCallback((x: number, y: number): Particle => {
-    const angle = Math.random() * Math.PI * 2;
-    const speed = Math.random() * 3 + 1;
-    const shapes: ('square' | 'circle' | 'triangle')[] = ['square', 'circle', 'triangle'];
-    
-    return {
-      x,
-      y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - Math.random() * 2,
-      rotation: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.2,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      size: Math.random() * 6 + 3,
-      opacity: 1,
-      life: 0,
-      maxLife: Math.random() * 180 + 120,
-      shape: shapes[Math.floor(Math.random() * shapes.length)],
-    };
-  }, []);
+  const fireConfetti = () => {
+    if (prefersReducedMotion.current || !confettiInstance.current) return;
 
-  const updateParticles = useCallback(() => {
-    const particles = particlesRef.current;
-    
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const particle = particles[i];
-      
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-      particle.vy += 0.1; // gravity
-      particle.rotation += particle.rotationSpeed;
-      particle.life += 1;
-      
-      // Fade out over time
-      particle.opacity = Math.max(0, 1 - (particle.life / particle.maxLife));
-      
-      // Remove dead particles
-      if (particle.life >= particle.maxLife || particle.y > window.innerHeight + 50) {
-        particles.splice(i, 1);
+    const count = 200;
+    const defaults = {
+      origin: { y: 0.7 },
+      colors: colors,
+      shapes: ['square', 'circle'],
+      disableForReducedMotion: true,
+    };
+
+    function fire(particleRatio: number, opts: any) {
+      if (confettiInstance.current) {
+        confettiInstance.current({
+          ...defaults,
+          ...opts,
+          particleCount: Math.floor(count * particleRatio)
+        });
       }
     }
-  }, []);
 
-  const drawParticles = useCallback((ctx: CanvasRenderingContext2D) => {
-    const particles = particlesRef.current;
-    
-    particles.forEach(particle => {
-      ctx.save();
-      ctx.translate(particle.x, particle.y);
-      ctx.rotate(particle.rotation);
-      ctx.globalAlpha = particle.opacity;
-      ctx.fillStyle = particle.color;
-      
-      const halfSize = particle.size / 2;
-      
-      switch (particle.shape) {
-        case 'circle':
-          ctx.beginPath();
-          ctx.arc(0, 0, halfSize, 0, Math.PI * 2);
-          ctx.fill();
-          break;
-        case 'triangle':
-          ctx.beginPath();
-          ctx.moveTo(0, -halfSize);
-          ctx.lineTo(-halfSize, halfSize);
-          ctx.lineTo(halfSize, halfSize);
-          ctx.closePath();
-          ctx.fill();
-          break;
-        case 'square':
-        default:
-          ctx.fillRect(-halfSize, -halfSize, particle.size, particle.size);
-          break;
-      }
-      
-      ctx.restore();
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
     });
-  }, []);
+    fire(0.2, {
+      spread: 60,
+    });
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
+  };
 
-  const animate = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    updateParticles();
-    drawParticles(ctx);
-    
-    animationIdRef.current = requestAnimationFrame(animate);
-  }, [updateParticles, drawParticles]);
-
-  const addConfettiAtPosition = useCallback((x: number, y: number) => {
-    // Skip if reduced motion is preferred
-    if (prefersReducedMotion.current) return;
-    
-    // Create confetti particles near position
-    if (Math.random() < 0.4) { // 40% chance to create particle
-      const particles = particlesRef.current;
-      const maxParticles = prefersReducedMotion.current ? 50 : 150;
-      if (particles.length < maxParticles) {
-        const offsetX = (Math.random() - 0.5) * 50;
-        const offsetY = (Math.random() - 0.5) * 50;
-        particles.push(createParticle(x + offsetX, y + offsetY));
-      }
-    }
-  }, [createParticle]);
-
-  const handleMouseMove = useCallback((event: MouseEvent) => {
-    mouseRef.current = {
-      x: event.clientX,
-      y: event.clientY,
-    };
-    
-    addConfettiAtPosition(event.clientX, event.clientY);
-  }, [addConfettiAtPosition]);
-
-  const handleTouchMove = useCallback((event: TouchEvent) => {
-    event.preventDefault();
-    if (event.touches.length > 0) {
-      const touch = event.touches[0];
-      mouseRef.current = {
-        x: touch.clientX,
-        y: touch.clientY,
-      };
-      
-      addConfettiAtPosition(touch.clientX, touch.clientY);
-    }
-  }, [addConfettiAtPosition]);
-
-  const resizeCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }, []);
+  useImperativeHandle(ref, () => ({
+    fireConfetti,
+  }), []);
 
   useEffect(() => {
     // Check for reduced motion preference
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       prefersReducedMotion.current = mediaQuery.matches;
-      
+
       const handleChange = (e: MediaQueryListEvent) => {
         prefersReducedMotion.current = e.matches;
       };
-      
+
       mediaQuery.addEventListener('change', handleChange);
-      
-      // Cleanup function will remove this listener
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Create confetti instance for custom canvas
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '1';
+
+    document.body.appendChild(canvas);
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
     resizeCanvas();
-    
-    // Add some initial falling particles for visual interest (only if motion is ok)
-    if (!prefersReducedMotion.current) {
-      const particles = particlesRef.current;
-      const initialCount = prefersReducedMotion.current ? 5 : 20;
-      for (let i = 0; i < initialCount; i++) {
-        particles.push(createParticle(
-          Math.random() * window.innerWidth,
-          -50 - Math.random() * 100
-        ));
+    confettiInstance.current = confetti.create(canvas, { resize: true });
+
+    // Add some initial falling confetti using animation loop
+    const startInitialConfetti = () => {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mediaQuery.matches || !confettiInstance.current) return;
+
+      const duration = 3 * 1000; // 3 seconds
+      const animationEnd = Date.now() + duration;
+      let skew = 1;
+
+      function randomInRange(min: number, max: number) {
+        return Math.random() * (max - min) + min;
       }
-    }
-    
+
+      const frame = () => {
+        const timeLeft = animationEnd - Date.now();
+        const ticks = Math.max(200, 500 * (timeLeft / duration));
+        skew = Math.max(0.8, skew - 0.001);
+
+        // Only spawn confetti 30% of the time to reduce density
+        if (Math.random() < 0.3 && confettiInstance.current) {
+          confettiInstance.current({
+            particleCount: 1,
+            startVelocity: 0,
+            ticks: ticks,
+            origin: {
+              x: Math.random(),
+              y: (Math.random() * skew) - 0.2
+            },
+            colors: colors,
+            shapes: ['square', 'circle'],
+            gravity: randomInRange(0.4, 0.6),
+            scalar: randomInRange(0.4, 1),
+            drift: randomInRange(-0.4, 0.4),
+            disableForReducedMotion: true,
+          });
+        }
+
+        if (timeLeft > 0) {
+          requestAnimationFrame(frame);
+        }
+      };
+
+      frame();
+    };
+
+    // Start falling confetti after canvas is ready
+    setTimeout(startInitialConfetti, 500);
+
     window.addEventListener('resize', resizeCanvas);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    
-    animate();
-    
+
     return () => {
       window.removeEventListener('resize', resizeCanvas);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-      }
+      document.body.removeChild(canvas);
     };
-  }, [resizeCanvas, handleMouseMove, animate, createParticle]);
+  }, [colors]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        zIndex: 1,
-      }}
-    />
-  );
-};
+  return null; // Canvas is managed in useEffect
+});
 
 export default ConfettiCanvas;
